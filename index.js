@@ -16,7 +16,7 @@ const fetch = require('node-fetch');
 		const response = await fetch(`${TARGET}/${value}`, {
 			headers: {
 				'user-agent': UA_STRING,
-				'Origin': ORIGIN
+				'Origin': ORIGIN,
 				[MTR_NAME]: MTR_VALUE
 			}
 		});
