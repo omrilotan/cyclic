@@ -9,17 +9,37 @@ const fetch = require('node-fetch');
 			STK,
 			UA_STRING,
 			ORIGIN,
+			HOOK,
+			MESSAGE,
+			CHANNEL,
+			FROM,
+			EMOJI,
 		} = process.env;
 
 		const result = await fetch(SOURCE)
 		const value = await result.text();
-		const response = await fetch(`${TARGET}/${value}`, {
-			headers: {
-				'user-agent': UA_STRING,
-				'Origin': ORIGIN,
-				[MTR_NAME]: MTR_VALUE
-			}
-		});
+
+		await Promise.all([
+			fetch(`${TARGET}/${value}`, {
+				headers: {
+					'user-agent': UA_STRING,
+					'Origin': ORIGIN,
+					[MTR_NAME]: MTR_VALUE
+				}
+			}),
+			fetch(HOOK, {
+				method: 'POST',
+				headers: {
+					'Content-type': 'application/json',
+				},
+				body: JSON.stringify({
+					text: [MESSAGE, value].join(' '),
+					channel: CHANNEL,
+					username: FROM,
+					icon_emoji: EMOJI,
+				}),
+			})
+		]);
 	} catch (error) {
 		console.error(error);
 		process.exit(1);

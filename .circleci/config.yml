@@ -1,6 +1,6 @@
 version: 2.1
 jobs:
-  start:
+  cycle:
     working_directory: ~/app
     docker:
       - image: circleci/node:12
@@ -21,7 +21,9 @@ jobs:
 
 workflows:
   version: 2.1
-  daily:
+  scheduled:
+    jobs:
+      - cycle
     triggers:
       - schedule:
           cron: "0 9 * * 1-5"
@@ -29,5 +31,3 @@ workflows:
             branches:
               only:
                 - master
-    jobs:
-      - start
