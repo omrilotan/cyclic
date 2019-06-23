@@ -33,7 +33,7 @@ const fetch = require('node-fetch');
 					'Content-type': 'application/json',
 				},
 				body: JSON.stringify({
-					text: [MESSAGE, value].join(' '),
+					text: MESSAGE.replace('${value}', value),
 					channel: CHANNEL,
 					username: FROM,
 					icon_emoji: EMOJI,
