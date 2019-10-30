@@ -1,0 +1,28 @@
+name: Cron
+
+on:
+  schedule:
+    - cron:  '0 * * 1 *'
+
+jobs:
+  test:
+    name: Test
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        node-version: [ '12' ]
+    steps:
+    - uses: actions/checkout@v1
+    - run: "curl -X POST -H 'Content-type: application/json' --data @message.json ${{ secrets.SLACK_WEBHOOK }}"
+    - name: Create issue
+      run: |
+        curl --request POST \
+        --url https://api.github.com/repos/${{ github.repository }}/issues \
+        --header 'authorization: Bearer ${{ secrets.GITHUB_TOKEN }}' \
+        --header 'content-type: application/json' \
+        --data '{
+          "title": "Automated issue for failing periodic tests",
+          "body": "This issue is automatically created.\n - workflow `${{ github.workflow }}`\n - commit #${{ github.sha }}",
+          "assignee": "omrilotan"
+          }'
+
